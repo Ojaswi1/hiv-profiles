@@ -1,14 +1,17 @@
 ---
 title: "Country Profile"
-output
+output:
 github_document:
     toc: true
+params:
+  my_iso3: "KEN"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$get(echo = FALSE)
+#set was mispelled as get
+knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
-# install.packages("countrycode")
+#install.packages("countrycode")
 library(countrycode)
 theme_set(theme_minimal())
 ```
@@ -24,15 +27,17 @@ The file `hiv_rates.csv` contains a tidy dataset with six columns:
 1. The percentage of HIV-positive males age 15-24.
 
 ```{r import data}
-hiv <- read_csv("hiv_rates.csv") %>%
+#File path was incomplete, added "data/" i.e the folder location before the csv filename
+hiv <- read_csv("data/hiv_rates.csv") %>%
   janitor::clean_names() %>%
   mutate(country_name = countrycode(iso3, "iso3c", "country.name"))
 ```
 
 ```{r customize, include = FALSE}
-my_iso3 <- "KEN" # can I make this a parameter?
+
 single_iso <- hiv %>%
-  filter(iso3 == my_iso3)
+  #use of params$<parameter name> format to call the my_iso3 parameter
+  filter(iso3 == params$my_iso3)
 my_country <- single_iso %>%
   distinct(country_name) %>%
   pull(country_name)
@@ -45,7 +50,8 @@ most_recent <- single_iso %>%
 
 For which years do we have data for `r my_country`?
 
-```{years}
+```{r years}
+#The chunk did not mention r 
 single_iso %>%
   distinct(year)
 ```
@@ -55,10 +61,11 @@ How has HIV incidence changed over time in `r my_country`?
 ```{r plot}
 plot_title <- glue::glue("Country: {my_country}")
 single_iso %>%
-  ggplot(aes(x = year, y = hiv_pct_15_to_49)) %>%
-  geom_point() %>%
-  geom_line() %>%
-  scale_y_continuous(labels = scales::percent) %>%
+  #ggplot should be connected using '+' and not piping
+  ggplot(aes(x = year, y = hiv_pct_15_to_49)) +
+  geom_point() +
+  geom_line() +
+  scale_y_continuous(labels = scales::percent) +
   labs(
     title = plot_title,
     subtitle = "HIV prevalence, age 15-49",
