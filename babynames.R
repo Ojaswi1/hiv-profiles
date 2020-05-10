@@ -9,7 +9,8 @@ applicants %>%
     n_all = n_all / 1e06
   ) %>%
   ggplot(mapping = aes(x = year, y = n_all, fill = sex)) +
-  geom_ribbon() +
+  #I changed the plot to geom_area instead of geom_ribbon and filled the y-aesthetic as n_all
+  geom_area(aes(y = n_all)) +
   scale_fill_brewer(type = "qual") +
   labs(
     title = "Total US births",
@@ -20,6 +21,7 @@ applicants %>%
   ) +
   theme_minimal()
 
+
 # write function to show trends over time for specific name
 name_trend <- function(person_name) {
   babynames %>%
@@ -28,7 +30,8 @@ name_trend <- function(person_name) {
     geom_line() +
     scale_color_brewer(type = "qual") +
     labs(
-      title = glue(Name: {person_name}),
+      #Put quotations around the title string
+      title = glue("Name: {person_name}"),
       x = "Year",
       y = "Number of births",
       color = NULL
@@ -43,7 +46,8 @@ top_n_trend <- function(n_year, n_rank = 5) {
   # create lookup table
   top_names <- babynames %>%
     group_by(name, sex) %>%
-    summarize(count = as.numeric(sum(count))) %>%
+    #Replaced sum(count) with sum(n) as the error was invalid type closure i.e. count was being called inside the count object
+    summarize(count = as.numeric(sum(n))) %>%
     filter(count > 1000) %>%
     select(name, sex)
   
@@ -55,7 +59,8 @@ top_n_trend <- function(n_year, n_rank = 5) {
   top_names <- filtered_names %>%
     filter(year == n_year) %>%
     group_by(name, sex) %>%
-    summarize(count = sum(count)) %>%
+    #Replaced sum(count) with sum(n)
+    summarize(count = sum(n)) %>%
     group_by(sex) %>%
     mutate(rank = min_rank(desc(count))) %>%
     filter(rank < n_rank) %>%
@@ -65,7 +70,8 @@ top_n_trend <- function(n_year, n_rank = 5) {
   # keep just the top N names over time and plot
   filtered_names %>%
     inner_join(select(top_names, sex, name)) %>%
-    ggplot(mapping = aes(x = year, y = count, color = name)) +
+    #Replaced y = count with y = n
+    ggplot(mapping = aes(x = year, y = n, color = name)) +
     facet_wrap(~sex, ncol = 1) +
     geom_line() +
     scale_color_brewer(type = "qual", palette = "Set3") +
@@ -84,7 +90,8 @@ top_n_trend(n_year = 1986, n_rank = 10)
 
 # compare naming trends to disney princess film releases
 disney <- tribble(
-  "princess",  "film", "release_year",
+  #Added "~" in front of the column names
+  ~"princess",  ~"film", ~"release_year",
   "Snow White", "Snow White and the Seven Dwarfs", 1937,
   "Cinderella", "Cinderella", 1950,
   "Aurora", "Sleeping Beauty", 1959,
@@ -103,12 +110,14 @@ disney <- tribble(
 ## join together the data frames
 babynames %>%
   # ignore men named after princesses - is this fair?
-  filter(sex == F) %>%
+  #hard to catch! - the "" around F was missing
+  filter(sex == "F") %>%
   inner_join(disney, by = c("name" = "princess")) %>%
   mutate(name = fct_reorder(.f = name, .x = release_year)) %>%
   # plot the trends over time, indicating release year
   ggplot(mapping = aes(x = year, y = n)) +
-  facet_wrap(~ name + film, scales = "free_y", labeller = label_both()) +
+  #I removed the () after label_both so it does not expect arguement "labels"
+  facet_wrap(~ name + film, scales = "free_y", labeller = label_both) +
   geom_line() +
   geom_vline(mapping = aes(xintercept = release_year), linetype = 2, alpha = .5) +
   scale_x_continuous(breaks = c(1880, 1940, 2000)) +
