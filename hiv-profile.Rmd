@@ -58,7 +58,7 @@ single_iso %>%
 
 How has HIV incidence changed over time in `r my_country`?
 
-```{r plot}
+```{r plot1}
 plot_title <- glue::glue("Country: {my_country}")
 single_iso %>%
   #ggplot should be connected using '+' and not piping
@@ -103,7 +103,7 @@ single_iso %>%
 
 How does `r my_country` compare in `r most_recent`?
 
-```{r plot, fig.height = 14}
+```{r plot2, fig.height = 14}
 plot_title <- glue::glue("Year: {most_recent}")
 hiv %>%
   filter(year == most_recent) %>%
