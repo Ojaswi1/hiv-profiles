@@ -42,11 +42,16 @@ name_trend <- function(person_name) {
 name_trend("Benjamin")
 
 # write function to show trends over time for top N names in a specific year
+  
+#To expand the color palette to have 20 colors and not 12 colors
+nb.cols <- 20
+mycolors <- colorRampPalette(RColorBrewer::brewer.pal(12, "Set3"))(nb.cols)
+
 top_n_trend <- function(n_year, n_rank = 5) {
   # create lookup table
   top_names <- babynames %>%
     group_by(name, sex) %>%
-    #Replaced sum(count) with sum(n) as the error was invalid type closure i.e. count was being called inside the count object
+    #Replaced sum(count) with sum(n) as the error was invalid type (closure) i.e. count was being called while summarising count itself
     summarize(count = as.numeric(sum(n))) %>%
     filter(count > 1000) %>%
     select(name, sex)
@@ -74,7 +79,8 @@ top_n_trend <- function(n_year, n_rank = 5) {
     ggplot(mapping = aes(x = year, y = n, color = name)) +
     facet_wrap(~sex, ncol = 1) +
     geom_line() +
-    scale_color_brewer(type = "qual", palette = "Set3") +
+    #Used the mycolors defined before to have 20 colors and not the 12 that are included in Set3
+    scale_color_manual(values = mycolors) +
     labs(
       title = glue("Most Popular Names of {n_year}"),
       x = "Year",
