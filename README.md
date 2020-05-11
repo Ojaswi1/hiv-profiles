@@ -10,7 +10,7 @@ The completed documents can be found here:
 
 3. [The successfully rendered hiv-profile.md](hiv-profile.md) - The above fixed file successfully knitted in its existing form 
     
-    * [Associated output files i.e. the images are in the folder hiv-profile_files](hiv_profile_files) - The associated output files (e.g. images) with the rendered hiv-profile.md file
+    * [Associated output files i.e. the images are in the folder hiv-profile_files](hiv_profile_files/figure-gfm) - The associated output files (e.g. images) with the rendered hiv-profile.md file
 
 4. [R script that renders all the individual country HIV profiles](rendering_hiv.R) - The R script that renders all of the individual country HIV profiles
 
