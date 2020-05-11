@@ -47,6 +47,7 @@ name_trend("Benjamin")
 nb.cols <- 20
 mycolors <- colorRampPalette(RColorBrewer::brewer.pal(12, "Set3"))(nb.cols)
 
+#the function
 top_n_trend <- function(n_year, n_rank = 5) {
   # create lookup table
   top_names <- babynames %>%
