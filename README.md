@@ -14,4 +14,4 @@ The completed documents can be found here:
 
 4. [R script that renders all the individual country HIV profiles](rendering_hiv.R) - The R script that renders all of the individual country HIV profiles
 
-5. [All rendered HTML files are in the folder reports](reports) - This folder has HTML files individually for each country
+5. [All rendered HTML files are in the folder reports](reports) - This folder has all the HTML files individually for each country
